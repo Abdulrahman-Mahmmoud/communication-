@@ -1231,8 +1231,332 @@
                 "D. Encouraging verbalization of fears"
             ],
             correct: 2
+        },           
+        { id: 71,
+            type: "tf",
+            text: "Good communication in healthcare involves only verbal skills.",
+            options: ["True", "False"],
+            correct: 1
         },
         {
-            id: 71,
+            id: 72,
             type: "tf",
-            text: "Good communicatio
+            text: "Active listening means concentrating on the speaker rather than planning your reply.",
+            options: ["True", "False"],
+            correct: 0
+        },
+        {
+            id: 73,
+            type: "tf",
+            text: "Interrupting the speaker is acceptable if you have a better idea.",
+            options: ["True", "False"],
+            correct: 1
+        },
+        {
+            id: 74,
+            type: "tf",
+            text: "Intrapersonal communication is communication within oneself (self-talk and reflection).",
+            options: ["True", "False"],
+            correct: 0
+        },
+        {
+            id: 75,
+            type: "tf",
+            text: "Maintaining eye contact is a sign of interest and appreciation in most professional settings.",
+            options: ["True", "False"],
+            correct: 0
+        },
+        {
+            id: 76,
+            type: "tf",
+            text: "Nonverbal communication includes only facial expressions.",
+            options: ["True", "False"],
+            correct: 1
+        },
+        {
+            id: 77,
+            type: "tf",
+            text: "Body posture and gestures can communicate comfort level and professionalism.",
+            options: ["True", "False"],
+            correct: 0
+        },
+        {
+            id: 78,
+            type: "tf",
+            text: "Touch should be used freely to show support even if the patient appears uncomfortable.",
+            options: ["True", "False"],
+            correct: 1
+        },
+        {
+            id: 79,
+            type: "tf",
+            text: "Patient teach-back is an effective way to confirm patient understanding.",
+            options: ["True", "False"],
+            correct: 0
+        },
+        {
+            id: 80,
+            type: "tf",
+            text: "Written communication in nursing does not need to be legible as long as it is accurate.",
+            options: ["True", "False"],
+            correct: 1
+        },
+        {
+            id: 81,
+            type: "tf",
+            text: "Nonverbal communication is always informal.",
+            options: ["True", "False"],
+            correct: 1
+        },
+        {
+            id: 82,
+            type: "tf",
+            text: "Compassion in nursing communication can help reduce patient anxiety and support recovery.",
+            options: ["True", "False"],
+            correct: 0
+        },
+        {
+            id: 83,
+            type: "tf",
+            text: "Cultural awareness is unimportant when all patients speak the same language.",
+            options: ["True", "False"],
+            correct: 1
+        },
+        {
+            id: 84,
+            type: "tf",
+            text: "Paralanguage includes tone, pitch, volume, and speed of speech.",
+            options: ["True", "False"],
+            correct: 0
+        },
+        {
+            id: 85,
+            type: "tf",
+            text: "Good verbal communication decreases job satisfaction among employees.",
+            options: ["True", "False"],
+            correct: 1
+        },
+        {
+            id: 86,
+            type: "tf",
+            text: "Nurses should avoid making personal connections with patients to maintain professionalism.",
+            options: ["True", "False"],
+            correct: 1
+        },
+        {
+            id: 87,
+            type: "tf",
+            text: "Leaning in and providing eye contact are effective nonverbal ways to show care.",
+            options: ["True", "False"],
+            correct: 0
+        },
+        {
+            id: 88,
+            type: "tf",
+            text: "Smiling is a simple but powerful nonverbal communication tool in healthcare.",
+            options: ["True", "False"],
+            correct: 0
+        }
+    ];
+
+    // Core Runtime Application State
+    let currentMode = ''; 
+    let currentIndex = 0;
+    let userAnswers = {}; // Stores responses map { qId: optionIndex }
+    let practiceStates = {}; // Stores checked results for bank mode { qId: {selected, correct} }
+    let examTimerInterval = null;
+    let secondsLeft = 3600; 
+
+    const welcomeScreen = document.getElementById('welcome-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const resultScreen = document.getElementById('result-screen');
+    const timerBadge = document.getElementById('examTimer');
+    const progressBar = document.getElementById('progressBar');
+
+    function startQuiz(mode) {
+        currentMode = mode;
+        currentIndex = 0;
+        userAnswers = {};
+        practiceStates = {};
+        
+        welcomeScreen.style.display = 'none';
+        resultScreen.style.display = 'none';
+        quizScreen.style.display = 'block';
+
+        if(mode === 'exam') {
+            timerBadge.style.display = 'inline-block';
+            secondsLeft = 3600;
+            startTimer();
+        } else {
+            timerBadge.style.display = 'none';
+            clearInterval(examTimerInterval);
+        }
+
+        displayQuestion();
+    }
+
+    function displayQuestion() {
+        const q = questions[currentIndex];
+        
+        // Progress calculation
+        const progressPercent = ((currentIndex) / questions.length) * 100;
+        progressBar.style.width = `${progressPercent}%`;
+        
+        // Setup Header Text
+        document.getElementById('qNumberDisplay').innerText = `Question ${currentIndex + 1} of ${questions.length}`;
+        document.getElementById('qTextDisplay').innerText = q.text;
+
+        // Render Answer List
+        const optionsContainer = document.getElementById('optionsContainer');
+        optionsContainer.innerHTML = '';
+
+        q.options.forEach((opt, idx) => {
+            const li = document.createElement('li');
+            li.className = 'option-item';
+            li.innerText = opt;
+            
+            // Reapply selections based on active mode context
+            if(currentMode === 'exam') {
+                if(userAnswers[q.id] === idx) {
+                    li.classList.add('selected');
+                }
+            } else if(currentMode === 'practice') {
+                if(practiceStates[q.id] !== undefined) {
+                    // locked answered state
+                    if(idx === q.correct) li.classList.add('correct');
+                    if(practiceStates[q.id] === idx && idx !== q.correct) li.classList.add('incorrect');
+                }
+            }
+
+            li.onclick = () => selectOption(q.id, idx, li);
+            optionsContainer.appendChild(li);
+        });
+
+        // Setup Controls Visibility Matrix
+        document.getElementById('prevBtn').disabled = (currentIndex === 0);
+        
+        const nextBtn = document.getElementById('nextBtn');
+        const finishBtn = document.getElementById('finishExamBtn');
+
+        if(currentIndex === questions.length - 1) {
+            nextBtn.style.display = 'none';
+            finishBtn.style.display = (currentMode === 'exam') ? 'inline-flex' : 'none';
+        } else {
+            nextBtn.style.display = 'inline-flex';
+            finishBtn.style.display = 'none';
+            
+            // In practice mode, don't let them advance without attempting unless already solved
+            if(currentMode === 'practice') {
+                nextBtn.disabled = (practiceStates[q.id] === undefined);
+            } else {
+                nextBtn.disabled = false; // Exam mode lets you skip/navigate freely
+            }
+        }
+    }
+
+    function selectOption(qId, oIdx, element) {
+        const q = questions[currentIndex];
+
+        if(currentMode === 'practice') {
+            if(practiceStates[qId] !== undefined) return; // Answer locked
+            
+            practiceStates[qId] = oIdx;
+            const items = document.querySelectorAll('.option-item');
+            
+            if(oIdx === q.correct) {
+                element.classList.add('correct');
+            } else {
+                element.classList.add('incorrect');
+                items[q.correct].classList.add('correct');
+            }
+            // Unlock next button safely
+            if(currentIndex < questions.length - 1) {
+                document.getElementById('nextBtn').disabled = false;
+            } else {
+                // If last question solved in practice mode, trigger dynamic auto wrap-up
+                setTimeout(endPracticeSummary, 1500);
+            }
+
+        } else if(currentMode === 'exam') {
+            userAnswers[qId] = oIdx;
+            document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+    }
+
+    function navigateQuestion(step) {
+        currentIndex += step;
+        if(currentIndex >= 0 && currentIndex < questions.length) {
+            displayQuestion();
+        }
+    }
+
+    // Timer Implementation
+    function startTimer() {
+        clearInterval(examTimerInterval);
+        updateTimerUI();
+        examTimerInterval = setInterval(() => {
+            secondsLeft--;
+            updateTimerUI();
+            if(secondsLeft <= 0) {
+                clearInterval(examTimerInterval);
+                endExam();
+            }
+        }, 1000);
+    }
+
+    function updateTimerUI() {
+        const mins = Math.floor(secondsLeft / 60);
+        const secs = secondsLeft % 60;
+        timerBadge.innerText = `⏱️ ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Finish Actions
+    function endExam() {
+        clearInterval(examTimerInterval);
+        let correctCount = 0;
+        questions.forEach(q => {
+            if(userAnswers[q.id] === q.correct) correctCount++;
+        });
+        showSummaryScreen("Exam Mode Results", correctCount);
+    }
+
+    function endPracticeSummary() {
+        let correctCount = 0;
+        questions.forEach(q => {
+            if(practiceStates[q.id] === q.correct) correctCount++;
+        });
+        showSummaryScreen("Practice Summary Score", correctCount);
+    }
+
+    function showSummaryScreen(title, score) {
+        quizScreen.style.display = 'none';
+        resultScreen.style.display = 'block';
+        
+        document.getElementById('resultModeLabel').innerText = title;
+        document.getElementById('finalScore').innerText = score;
+        
+        const pct = (score / questions.length) * 100;
+        const feedback = document.getElementById('feedbackText');
+        
+        if(pct >= 85) {
+            feedback.innerText = `Amazing! You scored ${pct.toFixed(1)}%. Exceptional comprehension of clinical communication techniques!`;
+            feedback.style.color = "#4ade80";
+        } else if(pct >= 60) {
+            feedback.innerText = `Passable score of ${pct.toFixed(1)}%. You've grasped most topics well, consider practicing a bit more.`;
+            feedback.style.color = "#fde047";
+        } else {
+            feedback.innerText = `Scored ${pct.toFixed(1)}%. We recommend reviewing clinical guidelines and going through the Question Bank again.`;
+            feedback.style.color = "#fca5a5";
+        }
+    }
+
+    function returnToHome() {
+        clearInterval(examTimerInterval);
+        resultScreen.style.display = 'none';
+        quizScreen.style.display = 'none';
+        welcomeScreen.style.display = 'block';
+    }
+</script>
+</body>
+</html>
