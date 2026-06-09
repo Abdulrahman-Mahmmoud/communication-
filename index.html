@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communication Premium Question Bank</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --primary-hover: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --error-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --border-color: #e2e8f0;
+            --glow-color: rgba(124, 58, 237, 0.15);
+            --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.07);
+        }
+
+        .dark-mode {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #05070c 100%);
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --text-secondary: #94a3b8;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --primary-hover: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+            --success-gradient: linear-gradient(135deg, #34d399 0%, #059669 100%);
+            --error-gradient: linear-gradient(135deg, #f87171 0%, #b91c1c 100%);
+            --border-color: #334155;
+            --glow-color: rgba(168, 85, 247, 0.25);
+            --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: background 0.4s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            padding: 30px 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            animation: appIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 25px;
+            border-bottom: 2px dashed var(--border-color);
+            margin-bottom: 35px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            box-shadow: 0 8px 20px -6px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px -5px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-toggle {
+            background: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .mode-selection {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .mode-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 45px 35px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 6px;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: transparent;
+            box-shadow: 0 30px 50px -10px var(--glow-color);
+        }
+
+        .mode-card:hover::before {
+            opacity: 1;
+        }
+
+        .mode-card h2 {
+            margin-bottom: 15px;
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .mode-card p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .quiz-container {
+            display: none;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary-gradient);
+            border-radius: 10px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 18px 28px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            font-weight: 700;
+            font-size: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .pulse-timer {
+            animation: pulse 1.5s infinite alternate;
+            color: #ef4444;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            animation: cardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .question-text {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            letter-spacing: -0.3px;
+        }
+
+        .options-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .option-item {
+            padding: 18px 24px;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            background: var(--card-bg);
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover {
+            border-color: #7c3aed;
+            transform: translateX(6px) scale(1.01);
+            box-shadow: 0 10px 20px -5px var(--glow-color);
+        }
+
+        .option-item.selected {
+            border-color: #4f46e5;
+            background: var(--glow-color);
+            font-weight: 700;
+        }
+
+        .option-item.correct {
+            background: var(--success-gradient) !important;
+            border-color: transparent !important;
+            color: #ffffff !important;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .option-item.wrong {
+            background: var(--error-gradient) !important;
+            border-color: transparent !important;
+            color: #ffffff !important;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes appIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: scale(0.95) translateY(15px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.6; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1.02); }
+        }
+
+        @media(max-width: 600px) {
+            .mode-selection { grid-template-columns: 1fr; gap: 20px; }
+            .question-card { padding: 25px; }
+            h1 { font-size: 22px; }
+            .btn { padding: 12px 20px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1 id="main-title">🌟 Communication Premium Interactive Bank</h1>
+        <button class="btn btn-toggle" onclick="toggleDarkMode()">🌓 Mode</button>
+    </header>
+
+    <div id="mode-selection" class="mode-selection">
+        <div class="mode-card" onclick="startQuiz('practice')">
+            <h2>🚀 Practice Mode</h2>
+            <p>حل تفاعلي فوري! اعرف إجابتك صحيحة ولا خاطئة في نفس اللحظة مع أنيميشن وتصحيح تلقائي مريح جداً للمذاكرة العميقة.</p>
+        </div>
+        <div class="mode-card" onclick="startQuiz('exam')">
+            <h2>⏱️ Exam Mode</h2>
+            <p>محاكاة حقيقية للجنة الامتحان بمؤقت تنازلي مدته 60 دقيقة لحل الأسئلة كاملة دون ظهور الإجابات إلا في النهاية مع تقرير ممتاز.</p>
+        </div>
+    </div>
+
+    <div id="quiz-container" class="quiz-container">
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+
+        <div class="info-bar">
+            <div>⚡ Progress: <span id="current-index">1</span>/88</div>
+            <div id="timer-box" class="hidden">⏳ Time Left: <span id="timer" class="pulse-timer">60:00</span></div>
+            <div>🏆 Score: <span id="current-score">0</span></div>
+        </div>
+
+        <div id="question-holder">
+            </div>
+
+        <div class="actions">
+            <button class="btn btn-toggle" id="prev-btn" onclick="prevQuestion()">Previous</button>
+            <button class="btn btn-toggle" id="menu-btn" onclick="goToMenu()">Home Menu</button>
+            <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">Next Question</button>
+            <button class="btn btn-primary hidden" id="submit-btn" onclick="confirmSubmission()">Submit Exam</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            q: '1. A nurse is conducting an admission assessment on an older adult client. To ensure effective verbal communication and pick the most appropriate technique, which client factor is most critical for the nurse to assess first?',
+            options: [
+                'A) The client\'s specific personal interests and hobbies.',
+                'B) The client\'s ultimate career background before retirement.',
+                'C) The client\'s sensory abilities, specifically hearing and vision.',
+                'D) The client\'s marital status and living arrangements.'
+            ],
+            answer: 2
+        },
+        {
+            q: '2. During a community health presentation about vaccination dates, the nurse delivers information directly to a large audience without allocating time for a question-and-answer session. Which statement best reflects a major risk associated with this approach?',
+            options: [
+                'A) The audience will automatically reject the information completely.',
+                'B) There is no immediate opportunity to clear up misunderstandings among the audience.',
+                'C) The nurse can instantly monitor and adapt the content based on immediate needs.',
+                'D) The message becomes too complex for the audience to process sequentially.'
+            ],
+            answer: 1
+        },
+        {
+            q: '3. A nurse leader is designing a health education brochure for a culturally diverse community. To increase the likelihood that community members will accept and trust the health advice, which strategy should the nurse prioritize?',
+            options: [
+                'A) Utilize a complex academic vocabulary to establish formal clinical authority.',
+                'B) Avoid using pictures or visual signs, relying exclusively on written text instructions.',
+                'C) Deliver the same generalized message format used for all other regional populations.',
+                'D) Ensure the message reflects the shared culture, education, and language of the target audience.'
+            ],
+            answer: 3
+        },
+        {
+            q: '4. A nurse observes a client who claims to have no pain, but notices the client is grimacing, avoiding eye contact, and tightly holding their abdomen. Based on communication principles, how should the nurse interpret these findings?',
+            options: [
+                'A) Verbal communication is always the most accurate indicator of a client\'s status.',
+                'B) The client\'s nonverbal body language is likely providing the most accurate clinical message.',
+                'C) The client is successfully utilizing a two-way feedback loop to clarify their state.',
+                'D) The nurse should ignore the physical gestures since the explicit words were clear.'
+            ],
+            answer: 1
+        },
+        {
+            q: '5. When developing a new educational plan regarding diabetes management, the nurse\'s first operational step should be focused on which component of the communication process?',
+            options: [
+                'A) Selecting a combined formal audio-visual transmission channel.',
+                'B) Evaluating the feedback mechanism to measure cognitive behavior changes.',
+                'C) Analyzing the specific characteristics and sociocultural factors of the intended audience.',
+                'D) Converting the intangible ideas into theoretical signs during encoding.'
+            ],
+            answer: 2
+        },
+        {
+            q: '6. A nurse explains a complex medication schedule to a client. Which action by the nurse represents the best method to implement a true two-way communication loop before discharging the client?',
+            options: [
+                'A) Handing the client a beautifully printed brochure containing the scheduled times.',
+                'B) Assuming the client fully understands because they smiled pleasantly and nodded rapidly.',
+                'C) Speaking rapidly and authoritatively to ensure all points are delivered on time.',
+                'D) Asking the client to restate the schedule in their own words to verify understanding.'
+            ],
+            answer: 3
+        },
+        {
+            q: '7. The concept of communication is derived etymologically from the Latin word \'communicare\'. What does this original root imply regarding the fundamental nature of the communication process?',
+            options: [
+                'A) It requires an authoritative command to dictate precise clinical behaviors.',
+                'B) It is an act focused inherently on sharing, participating, or being in a relation with others.',
+                'C) It is an isolated internal process of formulating intangible personal thoughts.',
+                'D) It can only be achieved successfully if formal written contracts are established.'
+            ],
+            answer: 1
+        },
+        {
+            q: '8. A nurse is preparing a health message aimed at changing dietary habits in a community. According to the criteria for an effective message, the nurse must ensure that the recommendations are \'affordable and require minimum time or effort\'. Which requirement does this specifically fulfill?',
+            options: [
+                'A) The recommendation must be epidemiologically correct.',
+                'B) The recommendation must establish linear control over the receiver\'s actions.',
+                'C) The recommendation must be feasible and realistic for the population.',
+                'D) The recommendation must maximize the theoretical nature of encoding symbols.'
+            ],
+            answer: 2
+        },
+        {
+            q: '9. What is the primary difference between the \'feedback\' component and the \'effect\' component when evaluating a nursing communication intervention?',
+            options: [
+                'A) Feedback is entirely nonverbal, whereas effect is strictly verbal expression.',
+                'B) Feedback is the mechanism to check if the message was understood; effect is the actual change in the receiver\'s knowledge, attitude, or practice.',
+                'C) Effect is initiated exclusively by the sender, while feedback is controlled by environmental noise.',
+                'D) Feedback occurs before encoding, whereas effect occurs during the selection of a channel.'
+            ],
+            answer: 1
+        },
+        {
+            q: '10. A nurse translates clinical guidelines regarding wound care into a series of simplified diagrams and basic instructions for a patient\'s caregiver. In the communication process, this conversion of intangible clinical concepts into symbols is known as:',
+            options: [
+                'A) Decoding',
+                'B) Feedback',
+                'C) Encoding',
+                'D) Channeling'
+            ],
+            answer: 2
+        },
+        {
+            q: '11. A nurse is caring for a patient with diabetes who needs medication adjustment, nutritional counseling, and foot care education. Which members of the healthcare team are MOST appropriate to collaborate with this patient?',
+            options: [
+                'A. Radiologist and speech therapist',
+                'B. Dietitian and pharmacist',
+                'C. Social worker and volunteer',
+                'D. Respiratory therapist and psychologist'
+            ],
+            answer: 1
+        },
+        {
+            q: '12. A healthcare team is in the "storming" stage of team development. Which behavior would the nurse MOST likely observe?',
+            options: [
+                'A. Members trust each other completely',
+                'B. Team members focus entirely on goals',
+                'C. Conflict occurs regarding assigned responsibilities',
+                'D. Procedures and communication patterns are well established'
+            ],
+            answer: 2
+        },
+        {
+            q: '13. Which statement BEST describes a principle of effective team-based healthcare?',
+            options: [
+                'A. Physicians should make all final decisions independently',
+                'B. Team members should avoid role overlap',
+                'C. Communication should occur only during emergencies',
+                'D. Team members share common goals and responsibilities'
+            ],
+            answer: 3
+        },
+        {
+            q: '14. A hospitalized patient suddenly develops cardiac arrest. Which type of healthcare team should respond FIRST?',
+            options: [
+                'A. Coordinating team',
+                'B. Core team',
+                'C. Ancillary team',
+                'D. Contingency team'
+            ],
+            answer: 1
+        },
+        {
+            q: '15. Which healthcare professional is MOST appropriate for teaching patient an adaptive method for dressing after a stroke?',
+            options: [
+                'A. Physiotherapist',
+                'B. Occupational therapist',
+                'C. Speech therapist',
+                'D. Social worker'
+            ],
+            answer: 1
+        },
+        {
+            q: '16. A nurse notices a patient has difficulty swallowing after a brain injury. Which referral is PRIORITY?',
+            options: [
+                'A. Respiratory therapist',
+                'B. Psychologist',
+                'C. Speech therapist',
+                'D. Dietitian'
+            ],
+            answer: 2
+        },
+        {
+            q: '17. Which characteristic is ESSENTIAL for effective healthcare team members?',
+            options: [
+                'A. Independent decision-making only',
+                'B. Limited communication between disciplines',
+                'C. Understanding both personal and team roles',
+                'D. Avoidance of shared responsibility'
+            ],
+            answer: 2
+        },
+        {
+            q: '18. A patient asks the nurse who is responsible for analyzing blood samples to help diagnose disease. Which response by the nurse is correct?',
+            options: [
+                'A. "The radiologist performs that function."',
+                'B. "The laboratory technologist performs that function."',
+                'C. "The physiotherapist performs that function."',
+                'D. "The occupational therapist performs that function."'
+            ],
+            answer: 1
+        },
+        {
+            q: '19. Which action demonstrates effective leadership within a healthcare team?',
+            options: [
+                'A. Ignoring team conflicts',
+                'B. Limiting communication among members',
+                'C. Coordinating and facilitating team activities',
+                'D. Allowing only senior staff to contribute ideas'
+            ],
+            answer: 2
+        },
+        {
+            q: '20. A patient with chronic obstructive pulmonary disease (COPD) is experiencing severe breathing difficulty. Which healthcare professional should the nurse notify FIRST?',
+            options: [
+                'A. Speech therapist',
+                'B. Respiratory therapist',
+                'C. Social worker',
+                'D. Occupational therapist'
+            ],
+            answer: 1
+        },
+        {
+            q: '21. A newly formed healthcare team in a rehabilitation unit is experiencing confusion regarding responsibilities. Some members are unsure about tasks, and communication is superficial. Which stage of team development is the team MOST likely experiencing?',
+            options: [
+                'A. Forming',
+                'B. Performing',
+                'C. Norming',
+                'D. Storming'
+            ],
+            answer: 0
+        },
+        {
+            q: '22. A nurse observes tension between healthcare team members because several professionals believe their responsibilities overlap. Patient care is beginning to suffer. Which challenge to effective teamwork is MOST likely causing this issue?',
+            options: [
+                'A. Shared leadership',
+                'B. Changing roles',
+                'C. Mutual respect',
+                'D. Measurable outcomes'
+            ],
+            answer: 1
+        },
+        {
+            q: '23. A patient recovering from amputation is learning to perform activities of daily living independently. Which healthcare team member is MOST appropriate to assist this patient?',
+            options: [
+                'A. Occupational therapist',
+                'B. Respiratory therapist',
+                'C. Dentist',
+                'D. Radiology technologist'
+            ],
+            answer: 0
+        },
+        {
+            q: '24. The nurse manager wants to improve teamwork within the unit. Which intervention would BEST promote effective communication?',
+            options: [
+                'A. Restrict communication to written reports',
+                'B. Encourage accessible communication channels among all team members',
+                'C. Require only physicians to speak during meetings',
+                'D. Limit interdisciplinary rounds'
+            ],
+            answer: 1
+        },
+        {
+            q: '25. A patient tells the nurse, "I\'m overwhelmed emotionally and financially after my cancer diagnosis." Which referral is MOST appropriate?',
+            options: [
+                'A. Social worker',
+                'B. Pharmacist',
+                'C. Radiologist',
+                'D. Physiotherapist'
+            ],
+            answer: 0
+        },
+        {
+            q: '26. A healthcare team has excellent clinical expertise but poor patient outcomes because members frequently misunderstand treatment plans. Which principle of team-based healthcare is MOST lacking?',
+            options: [
+                'A. Leadership',
+                'B. Effective communication',
+                'C. Mutual trust',
+                'D. Shared goals'
+            ],
+            answer: 1
+        },
+        {
+            q: '27. A nurse is working with a highly effective healthcare team. Which outcome would the nurse EXPECT?',
+            options: [
+                'A. Increased hospitalization costs',
+                'B. Reduced professional diversity',
+                'C. Improved patient satisfaction and fewer medical errors',
+                'D. Delayed access to healthcare services'
+            ],
+            answer: 2
+        },
+        {
+            q: '28. Which scenario BEST reflects mutual trust and respect among healthcare team members?',
+            options: [
+                'A. A physician dismisses the nurse\'s concerns about medication safety',
+                'B. Team members value each professional\'s contribution to patient care',
+                'C. Communication occurs only through formal documentation',
+                'D. Junior staff members avoid sharing opinions'
+            ],
+            answer: 1
+        },
+        {
+            q: '29. A patient with severe depression and sleep disturbances following trauma is admitted to the hospital. Which healthcare professional is MOST appropriate for managing these emotional concerns?',
+            options: [
+                'A. Psychologist',
+                'B. Radiologist',
+                'C. Pharmacist',
+                'D. Physiotherapist'
+            ],
+            answer: 0
+        },
+        {
+            q: '30. A healthcare team has reached the "performing" stage. Which observation by the nurse BEST indicates this stage?',
+            options: [
+                'A. Team members openly challenge the goals',
+                'B. Members avoid collaboration',
+                'C. The team works effectively toward common goals with trust and support',
+                'D. Roles remain unclear among members'
+            ],
+            answer: 2
+        },
+        {
+            q: '31. A nurse is caring for a patient who speaks limited English. Which action by the nurse best demonstrates effective communication in a healthcare setting?',
+            options: [
+                'A. Speaking louder and using complex medical terms',
+                'B. Using simple language, slowly, and confirming understanding with teach-back',
+                'C. Relying only on written instructions in English',
+                'D. Asking family members to interpret all information'
+            ],
+            answer: 1
+        },
+        {
+            q: '32. During a patient handover, a nurse is presenting information to the oncoming shift. Which strategy will most effectively enhance the presentation?',
+            options: [
+                'A. Speaking quickly to cover all details in a short time',
+                'B. Planning the presentation, using clear verbal and nonverbal cues, and adding visuals',
+                'C. Reading directly from the patient\'s chart without eye contact',
+                'D. Using only medical jargon to appear professional'
+            ],
+            answer: 1
+        },
+        {
+            q: '33. A nurse notices a patient looks anxious and is avoiding eye contact while discussing a new diagnosis. What is the most appropriate interpretation of this nonverbal behavior?',
+            options: [
+                'A. The patient is not interested in the conversation',
+                'B. The patient may be feeling fear, discomfort, or processing difficult information',
+                'C. The patient is showing respect by not making eye contact',
+                'D. The patient is ready to end the discussion'
+            ],
+            answer: 1
+        },
+        {
+            q: '34. Which of the following is the best example of patient teach-back technique?',
+            options: [
+                'A. "Do you understand the instructions I gave you?"',
+                'B. "Can you explain in your own words how you will take this medication?"',
+                'C. "I will repeat the instructions one more time."',
+                'D. "Most patients have no trouble with this medication."'
+            ],
+            answer: 1
+        },
+        {
+            q: '35. A nurse wants to build trust with a new patient. Which action is most important?',
+            options: [
+                'A. Sharing personal stories immediately',
+                'B. Actively listening, telling the truth, and admitting mistakes when they occur',
+                'C. Avoiding any discussion of negative topics',
+                'D. Using only written communication'
+            ],
+            answer: 1
+        },
+        {
+            q: '36. Which type of communication is primarily occurring when a nurse reflects on their own feelings and thoughts before speaking with a difficult patient?',
+            options: [
+                'A. Interpersonal communication',
+                'B. Public communication',
+                'C. Intrapersonal communication',
+                'D. Small-group communication'
+            ],
+            answer: 2
+        },
+        {
+            q: '37. A patient from a different cultural background seems uncomfortable during the conversation. What should the nurse do first?',
+            options: [
+                'A. Assume the patient is being rude',
+                'B. Demonstrate cultural awareness by assessing language needs and using preferred names/pronouns',
+                'C. Continue the conversation without changes',
+                'D. Tell the patient to adapt to the local customs'
+            ],
+            answer: 1
+        },
+        {
+            q: '38. Which nonverbal action best communicates caring to a patient in a healthcare setting?',
+            options: [
+                'A. Crossing arms while speaking',
+                'B. Maintaining appropriate eye contact and leaning slightly toward the patient',
+                'C. Standing far away with hands in pockets',
+                'D. Looking at the computer while talking'
+            ],
+            answer: 1
+        },
+        {
+            q: '39. When communicating with colleagues, which behavior demonstrates excellent verbal communication skills?',
+            options: [
+                'A. Interrupting others to share ideas quickly',
+                'B. Listening carefully without interrupting and maintaining eye contact',
+                'C. Speaking very softly so others must strain to hear',
+                'D. Using only closed-ended questions'
+            ],
+            answer: 1
+        },
+        {
+            q: '40. A nurse is educating a patient about wound care. Which statement indicates the best use of compassion in communication?',
+            options: [
+                'A. "You must change the dressing exactly as instructed or it won\'t heal."',
+                'B. "I understand this is difficult for you. Let\'s go over the steps together and address your concerns."',
+                'C. "This is standard procedure for everyone."',
+                'D. "Don\'t worry about it; many patients manage fine."'
+            ],
+            answer: 1
+        },
+        {
+            q: '41. Which of the following is a key difference between verbal and nonverbal communication?',
+            options: [
+                'A. Verbal communication is always more accurate than nonverbal communication',
+                'B. Nonverbal communication often reveals the actual emotions of a person',
+                'C. Verbal communication is always informal',
+                'D. Nonverbal communication can be easily documented'
+            ],
+            answer: 1
+        },
+        {
+            q: '42. To improve personal connections with patients, a nurse should:',
+            options: [
+                'A. Limit interactions to only necessary medical information',
+                'B. Focus solely on technical skills',
+                'C. Avoid sharing any personal information',
+                'D. Spend extra time daily getting to know the patient as a person and finding common ground'
+            ],
+            answer: 3
+        },
+        {
+            q: '43. A nurse educator is teaching students about electronic communication in healthcare. Which statement by a student indicates correct understanding?',
+            options: [
+                'A. Electronic communication only includes telephone calls.',
+                'B. Electronic communication uses electronic media to exchange information.',
+                'C. Electronic communication cannot transmit images or documents.',
+                'D. Electronic communication is mainly used for entertainment purposes only.'
+            ],
+            answer: 1
+        },
+        {
+            q: '44. A community health nurse sends laboratory reports, images, and patient instructions through e-mail. Which advantage of electronic communication is BEST demonstrated?',
+            options: [
+                'A. Legal protection',
+                'B. Low coverage',
+                'C. Multimedia transmission',
+                'D. Resistance to change'
+            ],
+            answer: 2
+        },
+        {
+            q: '45. A nurse manager notices that healthcare workers are overwhelmed by hundreds of electronic messages daily, causing delayed responses to urgent patient issues. Which disadvantage of electronic communication does this scenario represent?',
+            options: [
+                'A. Patient demand',
+                'B. High-quality care',
+                'C. Volume of data overload',
+                'D. Exchange of feedback'
+            ],
+            answer: 2
+        },
+        {
+            q: '46. A hospital introduces video conferencing for multidisciplinary meetings involving physicians from different countries. Which advantage of electronic communication is MOST evident?',
+            options: [
+                'A. Legal documentation',
+                'B. Managing global operations',
+                'C. Resistance to change',
+                'D. Limited accessibility'
+            ],
+            answer: 1
+        },
+        {
+            q: '47. Which electronic communication method is MOST appropriate for sending signed contracts and certificates rapidly between healthcare institutions?',
+            options: [
+                'A. Blogging',
+                'B. Messaging',
+                'C. Fax',
+                'D. Social networking'
+            ],
+            answer: 2
+        },
+        {
+            q: '48. A nursing student says, "Patients forget verbal instructions quickly, so electronic communication can improve safety." Which concept is the student describing?',
+            options: [
+                'A. Multimedia',
+                'B. Management support',
+                'C. Safe, high-quality care',
+                'D. Resistance to change'
+            ],
+            answer: 2
+        },
+        {
+            q: '49. A hospital implemented an electronic communication system allowing nurses to contact physicians through secure messaging. After implementation, patient satisfaction scores increased significantly because patients received faster responses to concerns. Which outcome is MOST directly associated with electronic communication in this scenario?',
+            options: [
+                'A. Increased infrastructure cost',
+                'B. Improved patient satisfaction',
+                'C. Decreased global operations',
+                'D. Reduced need for healthcare staff'
+            ],
+            answer: 1
+        },
+        {
+            q: '50. During a telehealth consultation, the internet connection repeatedly disconnects, resulting in incomplete patient assessment and communication delays. Which barrier to electronic communication is MOST likely contributing to this issue?',
+            options: [
+                'A. Facilitators',
+                'B. Management support',
+                'C. Resistance to change',
+                'D. Technological limitations'
+            ],
+            answer: 3
+        },
+        {
+            q: '51. A nurse enters a patient\'s room and notices the patient crying quietly. The nurse sits beside the patient and says, "You seem upset today. Would you like to talk about it?" Which therapeutic communication technique is the nurse using?',
+            options: [
+                'A. Giving advice',
+                'B. Offering self',
+                'C. Changing the subject',
+                'D. False reassurance'
+            ],
+            answer: 1
+        },
+        {
+            q: '52. A patient says: "I feel like nobody understands what I\'m going through." Which response by the nurse is MOST therapeutic?',
+            options: [
+                'A. "Everything will be okay soon."',
+                'B. "Why do you think that?"',
+                'C. "Tell me more about those feelings."',
+                'D. "You should stay positive."'
+            ],
+            answer: 2
+        },
+        {
+            q: '53. A patient diagnosed with chronic illness states: "I don\'t think the treatment is helping." Which nurse response demonstrates active listening?',
+            options: [
+                'A. "The physician knows what is best."',
+                'B. "You sound discouraged about your progress."',
+                'C. "At least your condition is not worse."',
+                'D. "You must continue treatment anyway."'
+            ],
+            answer: 1
+        },
+        {
+            q: '54. A nurse asks a patient: "Tell me about your pain." The nurse is using which communication strategy?',
+            options: [
+                'A. Closed-ended questioning',
+                'B. Clarification',
+                'C. Open-ended questioning',
+                'D. Reflection'
+            ],
+            answer: 2
+        },
+        {
+            q: '55. A patient says: "I\'m afraid the surgery will change my life forever." Which nurse response is MOST therapeutic?',
+            options: [
+                'A. "Don\'t worry. Everything will be fine."',
+                'B. "Many people feel nervous before surgery."',
+                'C. "What concerns you most about the surgery?"',
+                'D. "You shouldn\'t think negatively."'
+            ],
+            answer: 2
+        },
+        {
+            q: '56. A nurse remains silent after a patient states: "I don\'t know if I can handle this anymore." What is the BEST rationale for the nurse\'s silence?',
+            options: [
+                'A. Silence discourages emotional expression',
+                'B. Silence allows time for reflection',
+                'C. Silence changes the topic indirectly',
+                'D. Silence shows disagreement'
+            ],
+            answer: 1
+        },
+        {
+            q: '57. A patient says: "Nobody visits me anymore." Which response by the nurse demonstrates reflection?',
+            options: [
+                'A. "You feel abandoned by others?"',
+                'B. "Why don\'t they visit?"',
+                'C. "You should call them more often."',
+                'D. "That happens to many patients."'
+            ],
+            answer: 0
+        },
+        {
+            q: '58. Which nurse statement is considered NON-therapeutic?',
+            options: [
+                'A. "I understand this is difficult for you."',
+                'B. "Can you explain what you mean?"',
+                'C. "You should not feel that way."',
+                'D. "I\'m here to listen."'
+            ],
+            answer: 2
+        },
+        {
+            q: '59. A patient newly diagnosed with diabetes says: "My life is over. I\'ll never enjoy food again." Which response by the nurse is BEST?',
+            options: [
+                'A. "That\'s not true. You\'ll get used to it."',
+                'B. "Many diabetic patients live normal lives."',
+                'C. "Tell me what worries you most about this diagnosis."',
+                'D. "You need to focus on controlling your glucose."'
+            ],
+            answer: 2
+        },
+        {
+            q: '60. During assessment, the patient avoids eye contact, speaks softly, and folds arms tightly across the chest. What should the nurse do FIRST?',
+            options: [
+                'A. Continue asking questions rapidly',
+                'B. Recognize possible anxiety or discomfort',
+                'C. Ignore the body language',
+                'D. End the interview immediately'
+            ],
+            answer: 1
+        },
+        {
+            q: '61. A patient says: "I know I\'m dying soon." Which response by the nurse is MOST therapeutic?',
+            options: [
+                'A. "You shouldn\'t say that."',
+                'B. "Why do you think that?"',
+                'C. "What makes you feel that way?"',
+                'D. "The doctors are doing everything possible."'
+            ],
+            answer: 2
+        },
+        {
+            q: '62. A nurse says: "So you\'re saying the pain becomes worse at night?" Which therapeutic communication technique is being used?',
+            options: [
+                'A. Clarification',
+                'B. Summarizing',
+                'C. Reflection',
+                'D. Focusing'
+            ],
+            answer: 0
+        },
+        {
+            q: '63. A patient continuously changes topics during an interview. Which response is BEST?',
+            options: [
+                'A. "Please answer the question directly."',
+                'B. "We were discussing your chest pain. Tell me more about that."',
+                'C. "You seem distracted today."',
+                'D. "Why are you avoiding the topic?"'
+            ],
+            answer: 1
+        },
+        {
+            q: '64. A nurse states: "The laboratory results usually take about 48 hours." This is an example of:',
+            options: [
+                'A. Reflection',
+                'B. Offering self',
+                'C. Giving information',
+                'D. Validation'
+            ],
+            answer: 2
+        },
+        {
+            q: '65. A patient says: "I hate depending on other people for everything." Which nurse response best demonstrates empathy?',
+            options: [
+                'A. "You\'ll recover soon."',
+                'B. "It sounds frustrating to lose some independence."',
+                'C. "You should try to stay optimistic."',
+                'D. "Everyone needs help sometimes."'
+            ],
+            answer: 1
+        },
+        {
+            q: '66. The nurse notices that a patient becomes quiet and looks away whenever family members are mentioned. What is the nurse\'s BEST action?',
+            options: [
+                'A. Ignore the behavior and continue assessment',
+                'B. Ask closed-ended questions',
+                'C. Explore the patient\'s feelings about family relationships',
+                'D. Immediately notify the physician'
+            ],
+            answer: 2
+        },
+        {
+            q: '67. Which nursing action BEST demonstrates therapeutic communication?',
+            options: [
+                'A. Giving advice based on personal experience',
+                'B. Reassuring the patient that everything will be fine',
+                'C. Encouraging the patient to identify solutions independently',
+                'D. Avoiding emotional discussions'
+            ],
+            answer: 2
+        },
+        {
+            q: '68. A patient states "I feel useless since I became sick." Which nurse response is MOST therapeutic?',
+            options: [
+                'A. "You should not think negatively."',
+                'B. "You still have many abilities and strengths."',
+                'C. "Tell me more about feeling useless."',
+                'D. "Your family still needs you."'
+            ],
+            answer: 2
+        },
+        {
+            q: '69. A 52-year-old patient was admitted following a myocardial infarction. During the evening assessment, the patient says: "I\'m scared to sleep because I think my heart might stop." Which nurse response is BEST?',
+            options: [
+                'A. "You are being monitored closely, so don\'t worry."',
+                'B. "Why would you think your heart will stop?"',
+                'C. "It sounds like you\'re frightened about your condition."',
+                'D. "Try to relax and get some rest."'
+            ],
+            answer: 2
+        },
+        {
+            q: '70. The patient later becomes silent and begins staring at the floor after discussing fears about death. What should the nurse do NEXT?',
+            options: [
+                'A. Change the subject to distract the patient',
+                'B. Sit quietly and allow time for reflection',
+                'C. Leave the room to provide privacy',
+                'D. Continue asking assessment questions rapidly'
+            ],
+            answer: 1
+        },
+        // True / False Section
+        {
+            q: '71. [True/False] Good communication in healthcare involves only verbal skills.',
+            options: ['True', 'False'],
+            answer: 1
+        },
+        {
+            q: '72. [True/False] Active listening means concentrating on the speaker rather than planning your reply.',
+            options: ['True', 'False'],
+            answer: 0
+        },
+        {
+            q: '73. [True/False] Interrupting the speaker is acceptable if you have a better idea.',
+            options: ['True', 'False'],
+            answer: 1
+        },
+        {
+            q: '74. [True/False] Intrapersonal communication is communication within oneself (self-talk and reflection).',
+            options: ['True', 'False'],
+            answer: 0
+        },
+        {
+            q: '75. [True/False] Maintaining eye contact is a sign of interest and appreciation in most professional settings.',
+            options: ['True', 'False'],
+            answer: 0
+        },
+        {
+            q: '76. [True/False] Nonverbal communication includes only facial expressions.',
+            options: ['True', 'False'],
+            answer: 1
+        },
+        {
+            q: '77. [True/False] Body posture and gestures can communicate comfort level and professionalism.',
+            options: ['True', 'False'],
+            answer: 0
+        },
+        {
+            q: '78. [True/False] Touch should be used freely to show support even if the patient appears uncomfortable.',
+            options: ['True', 'False'],
+            answer: 1
+        },
+        {
+            q: '79. [True/False] Patient teach-back is an effective way to confirm patient understanding.',
+            options: ['True', 'False'],
+            answer: 0
+        },
+        {
+            q: '80. [True/False] Written communication in nursing does not need to be legible as long as it is accurate.',
+            options: ['True', 'False'],
+            answer: 1
+        },
+        {
+            q: '81. [True/False] Nonverbal communication is always informal.',
+            options: ['True', 'False'],
+            answer: 1
+        },
+        {
+            q: '82. [True/False] Compassion in nursing communication can help reduce patient anxiety and support recovery.',
+            options: ['True', 'False'],
+            answer: 0
+        },
+        {
+            q: '83. [True/False] Cultural awareness is unimportant when all patients speak the same language.',
+            options: ['True', 'False'],
+            answer: 1
+        },
+        {
+            q: '84. [True/False] Paralanguage includes tone, pitch, volume, and speed of speech.',
+            options: ['True', 'False'],
+            answer: 0
+        },
+        {
+            q: '85. [True/False] Good verbal communication decreases job satisfaction among employees.',
+            options: ['True', 'False'],
+            answer: 1
+        },
+        {
+            q: '86. [True/False] Leaning in and providing eye contact are effective nonverbal ways to show care.',
+            options: ['True', 'False'],
+            answer: 0
+        },
+        {
+            q: '87. [True/False] Nurses should avoid making personal connections with patients to maintain professionalism.',
+            options: ['True', 'False'],
+            answer: 1
+        },
+        {
+            q: '88. [True/False] Smiling is a simple but powerful nonverbal communication tool in healthcare.',
+            options: ['True', 'False'],
+            answer: 0
+        }
+    ];
+
+    let currentMode = '';
+    let currentIndex = 0;
+    let timerInterval;
+    let examDuration = 3600; 
+    let timeRemaining = examDuration;
+    let userAnswers = new Array(questions.length).fill(null);
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+    }
+function startQu
