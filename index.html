@@ -3,33 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Communication Skills Question Bank</title>
+    <title>Communication Skills Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --text-main: #2d3748;
-            --text-muted: #718096;
-            --primary: #319795;
-            --primary-hover: #2c7a7b;
-            --success: #38a169;
-            --danger: #e53e3e;
-            --border-color: #e2e8f0;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        }
-
-        [data-theme="dark"] {
-            --bg-gradient: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
-            --card-bg: rgba(26, 32, 44, 0.95);
-            --text-main: #f7fafc;
-            --text-muted: #a0aec0;
-            --primary: #4fd1c5;
-            --primary-hover: #319795;
-            --success: #48bb78;
-            --danger: #f56565;
-            --border-color: #4a5568;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            
+            /* Mode Colors */
+            --practice-color: #10b981;
+            --practice-hover: #059669;
+            --exam-color: #8b5cf6;
+            --exam-hover: #7c3aed;
+            
+            --success: #10b981;
+            --danger: #ef4444;
         }
 
         * {
@@ -37,136 +29,167 @@
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
-            transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
             background: var(--bg-gradient);
             color: var(--text-main);
             min-height: 100vh;
-            padding: 2rem 1rem;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            padding: 1.5rem;
+            overflow-x: hidden;
         }
 
         .container {
             width: 100%;
-            max-width: 850px;
+            max-width: 800px;
         }
 
-        header {
+        /* Glassmorphism Card Base */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        /* --- Welcome Screen Styles --- */
+        #welcome-screen {
+            text-align: center;
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        .modes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .modes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .mode-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .mode-card.practice:hover {
+            border-color: var(--practice-color);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .mode-card.exam:hover {
+            border-color: var(--exam-color);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        .mode-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .mode-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .mode-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* --- Quiz Screen Styles --- */
+        #quiz-screen {
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .quiz-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
-            animation: fadeInDown 0.5s ease;
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .controls {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .theme-toggle {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 0.6rem;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .mode-selector {
-            display: flex;
-            background: var(--border-color);
-            padding: 0.3rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-            box-shadow: var(--shadow);
-            animation: fadeIn 0.6s ease;
-        }
-
-        .mode-btn {
-            flex: 1;
-            padding: 0.8rem;
-            border: none;
-            background: none;
-            color: var(--text-muted);
-            font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .mode-btn.active {
-            background: var(--card-bg);
-            color: var(--primary);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        .timer-card {
-            background: var(--danger);
-            color: white;
-            padding: 1rem;
-            border-radius: 12px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            display: none;
-            box-shadow: var(--shadow);
-            animation: pulse 2s infinite;
-        }
-
-        .question-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 2rem;
             margin-bottom: 1.5rem;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
-            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #38bdf8, #3b82f6);
+            border-radius: 4px;
+        }
+
+        .timer-badge {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid var(--danger);
+            color: #fca5a5;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .question-box {
+            margin-bottom: 2rem;
+        }
+
+        .question-number {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #38bdf8;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
         }
 
         .question-text {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 500;
-            margin-bottom: 1.5rem;
             line-height: 1.6;
         }
 
@@ -174,131 +197,200 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 1rem;
         }
 
         .option-item {
-            padding: 1rem;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 1.2rem;
+            border-radius: 14px;
             cursor: pointer;
-            font-weight: 400;
-            background: transparent;
+            font-size: 1rem;
+            line-height: 1.4;
         }
 
         .option-item:hover {
-            border-color: var(--primary);
-            background: rgba(79, 209, 197, 0.05);
-            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #38bdf8;
+            transform: translateX(4px);
         }
 
-        /* Classes for instant validation & results */
+        /* State Modifiers */
+        .option-item.selected {
+            border-color: #3b82f6 !important;
+            background: rgba(59, 130, 246, 0.15) !important;
+        }
+
         .option-item.correct {
-            background-color: rgba(56, 161, 105, 0.15) !important;
             border-color: var(--success) !important;
-            color: var(--success) !important;
-            font-weight: 600;
+            background: rgba(16, 185, 129, 0.15) !important;
+            color: #a7f3d0;
         }
 
         .option-item.incorrect {
-            background-color: rgba(229, 62, 98, 0.15) !important;
             border-color: var(--danger) !important;
-            color: var(--danger) !important;
+            background: rgba(239, 68, 68, 0.15) !important;
+            color: #fca5a5;
         }
 
-        .option-item.selected {
-            border-color: var(--primary) !important;
-            background-color: rgba(79, 209, 197, 0.1) !important;
-        }
-
-        .submit-area {
+        /* Navigation Controls */
+        .nav-controls {
             display: flex;
-            justify-content: center;
-            margin: 2rem 0;
+            justify-content: space-between;
+            margin-top: 2.5rem;
+            gap: 1rem;
         }
 
-        .result-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 2.5rem;
-            text-align: center;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-color);
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            margin-left: auto;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .btn-submit {
+            background: var(--exam-color);
+            color: white;
+        }
+        .btn-submit:hover {
+            background: var(--exam-hover);
+        }
+
+        /* --- Result Screen --- */
+        #result-screen {
             display: none;
-            animation: zoomIn 0.5s ease;
+            text-align: center;
+            animation: fadeInScale 0.5s ease-out;
         }
 
-        .result-score {
-            font-size: 3rem;
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 4px solid #38bdf8;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem auto;
+        }
+
+        .score-num {
+            font-size: 2.5rem;
             font-weight: 700;
-            color: var(--primary);
-            margin: 1rem 0;
+            color: #38bdf8;
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes zoomIn {
-            from { opacity: 0; transform: scale(0.9); }
+        /* Animations */
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>Communication Skills Bank</h1>
-        <div class="controls">
-            <button class="theme-toggle" id="themeToggle" title="Toggle Theme">🌓</button>
+    <!-- 1. Welcome / Mode Selection Screen -->
+    <div id="welcome-screen" class="glass-card">
+        <h1 class="welcome-title">Communication Skills Hub</h1>
+        <p class="welcome-subtitle">Select your preferred interaction mode to begin</p>
+        
+        <div class="modes-grid">
+            <div class="mode-card practice" onclick="startQuiz('practice')">
+                <div class="mode-icon" style="color: var(--practice-color);">📝</div>
+                <div class="mode-name">Question Bank</div>
+                <div class="mode-desc">Practice with untimed questions and instant feedback after each answer.</div>
+            </div>
+            
+            <div class="mode-card exam" onclick="startQuiz('exam')">
+                <div class="mode-icon" style="color: var(--exam-color);">⏱️</div>
+                <div class="mode-name">Exam Mode</div>
+                <div class="mode-desc">Simulate a real test environment. 1-hour limit with final grading.</div>
+            </div>
         </div>
-    </header>
-
-    <div class="mode-selector">
-        <button class="mode-btn active" id="practiceModeBtn" onclick="setMode('practice')">Practice Mode</button>
-        <button class="mode-btn" id="examModeBtn" onclick="setMode('exam')">Exam Mode (1 Hour)</button>
     </div>
 
-    <div class="timer-card" id="timerCard">Time Remaining: 60:00</div>
+    <!-- 2. Interactive Quiz Screen (Single Question view) -->
+    <div id="quiz-screen" class="glass-card">
+        <div class="quiz-header">
+            <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="returnToHome()">🏠 Home</button>
+            <div class="timer-badge" id="examTimer">60:00</div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
 
-    <div id="questionsContainer"></div>
+        <div class="question-box">
+            <div class="question-number" id="qNumberDisplay">Question 1 of 88</div>
+            <div class="question-text" id="qTextDisplay">Question text goes here?</div>
+        </div>
 
-    <div class="submit-area" id="submitArea" style="display: none;">
-        <button class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;" onclick="submitExam()">Submit Exam</button>
+        <ul class="options-list" id="optionsContainer">
+            <!-- Dynamic Insertion -->
+        </ul>
+
+        <div class="nav-controls">
+            <button class="btn btn-secondary" id="prevBtn" onclick="navigateQuestion(-1)">Previous</button>
+            <button class="btn btn-primary" id="nextBtn" onclick="navigateQuestion(1)">Next</button>
+            <button class="btn btn-submit" id="finishExamBtn" style="display: none;" onclick="endExam()">Finish & Submit</button>
+        </div>
     </div>
 
-    <div class="result-card" id="resultCard">
-        <h2>Exam Completed!</h2>
-        <div class="result-score" id="resultScore">0/0</div>
-        <p id="resultFeedback" style="font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--text-muted);"></p>
-        <button class="btn btn-primary" style="margin: 0 auto;" onclick="resetQuiz()">Restart</button>
+    <!-- 3. Result Summary Screen -->
+    <div id="result-screen" class="glass-card">
+        <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Assessment Complete!</h2>
+        <p style="color: var(--text-muted);" id="resultModeLabel">Exam Mode Feedback</p>
+        
+        <div class="score-circle">
+            <div class="score-num" id="finalScore">00</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);" id="scoreTotalLabel">out of 88</div>
+        </div>
+        
+        <p id="feedbackText" style="margin-bottom: 2rem; font-size: 1.1rem; padding: 0 1rem;"></p>
+        <button class="btn btn-primary" style="margin: 0 auto;" onclick="returnToHome()">Back to Main Menu</button>
     </div>
 </div>
 
 <script>
-    // System Theme Initialization
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('click', () => {
-        const currentTheme = document.documentElement.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-    });
-
-    // Complete Question Bank Array
+    // Complete Immutable Database of 88 Questions
     const questions = [
         {
             id: 1,
@@ -1140,285 +1232,7 @@
             ],
             correct: 2
         },
-        // True/False Questions
         {
             id: 71,
             type: "tf",
-            text: "Good communication in healthcare involves only verbal skills.",
-            options: ["True", "False"],
-            correct: 1
-        },
-        {
-            id: 72,
-            type: "tf",
-            text: "Active listening means concentrating on the speaker rather than planning your reply.",
-            options: ["True", "False"],
-            correct: 0
-        },
-        {
-            id: 73,
-            type: "tf",
-            text: "Interrupting the speaker is acceptable if you have a better idea.",
-            options: ["True", "False"],
-            correct: 1
-        },
-        {
-            id: 74,
-            type: "tf",
-            text: "Intrapersonal communication is communication within oneself (self-talk and reflection).",
-            options: ["True", "False"],
-            correct: 0
-        },
-        {
-            id: 75,
-            type: "tf",
-            text: "Maintaining eye contact is a sign of interest and appreciation in most professional settings.",
-            options: ["True", "False"],
-            correct: 0
-        },
-        {
-            id: 76,
-            type: "tf",
-            text: "Nonverbal communication includes only facial expressions.",
-            options: ["True", "False"],
-            correct: 1
-        },
-        {
-            id: 77,
-            type: "tf",
-            text: "Body posture and gestures can communicate comfort level and professionalism.",
-            options: ["True", "False"],
-            correct: 0
-        },
-        {
-            id: 78,
-            type: "tf",
-            text: "Touch should be used freely to show support even if the patient appears uncomfortable.",
-            options: ["True", "False"],
-            correct: 1
-        },
-        {
-            id: 79,
-            type: "tf",
-            text: "Patient teach-back is an effective way to confirm patient understanding.",
-            options: ["True", "False"],
-            correct: 0
-        },
-        {
-            id: 80,
-            type: "tf",
-            text: "Written communication in nursing does not need to be legible as long as it is accurate.",
-            options: ["True", "False"],
-            correct: 1
-        },
-        {
-            id: 81,
-            type: "tf",
-            text: "Nonverbal communication is always informal.",
-            options: ["True", "False"],
-            correct: 1
-        },
-        {
-            id: 82,
-            type: "tf",
-            text: "Compassion in nursing communication can help reduce patient anxiety and support recovery.",
-            options: ["True", "False"],
-            correct: 0
-        },
-        {
- id: 83,
-            type: "tf",
-            text: "Cultural awareness is unimportant when all patients speak the same language.",
-            options: ["True", "False"],
-            correct: 1
-        },
-        {
-            id: 84,
-            type: "tf",
-            text: "Paralanguage includes tone, pitch, volume, and speed of speech.",
-            options: ["True", "False"],
-            correct: 0
-        },
-        {
-            id: 85,
-            type: "tf",
-            text: "Good verbal communication decreases job satisfaction among employees.",
-            options: ["True", "False"],
-            correct: 1
-        },
-        {
-            id: 86,
-            type: "tf",
-            text: "Nurses should avoid making personal connections with patients to maintain professionalism.",
-            options: ["True", "False"],
-            correct: 1
-        },
-        {
-            id: 87,
-            type: "tf",
-            text: "Leaning in and providing eye contact are effective nonverbal ways to show care.",
-            options: ["True", "False"],
-            correct: 0
-        },
-        {
-            id: 88,
-            type: "tf",
-            text: "Smiling is a simple but powerful nonverbal communication tool in healthcare.",
-            options: ["True", "False"],
-            correct: 0
-        }
-    ];
-
-    let currentMode = 'practice';
-    let userAnswers = {};
-    let examInterval = null;
-    let examTimeLeft = 3600; // 1 hour in seconds
-
-    // Render App
-    function renderQuiz() {
-        const container = document.getElementById('questionsContainer');
-        container.innerHTML = '';
-        
-        questions.forEach((q, idx) => {
-            const card = document.createElement('div');
-            card.className = 'question-card';
-            card.id = `q-card-${q.id}`;
-            
-            const text = document.createElement('div');
-            text.className = 'question-text';
-            text.innerHTML = `<strong>Q${idx + 1}:</strong> ${q.text}`;
-            card.appendChild(text);
-            
-            const optionsList = document.createElement('ul');
-            optionsList.className = 'options-list';
-            
-            q.options.forEach((opt, oIdx) => {
-                const item = document.createElement('li');
-                item.className = 'option-item';
-                item.innerText = opt;
-                item.id = `opt-${q.id}-${oIdx}`;
-                
-                item.onclick = () => handleOptionClick(q.id, oIdx, item);
-                optionsList.appendChild(item);
-            });
-            
-            card.appendChild(optionsList);
-            container.appendChild(card);
-        });
-    }
-
-    function handleOptionClick(qId, oIdx, element) {
-        if (currentMode === 'practice') {
-            const q = questions.find(item => item.id === qId);
-            const card = document.getElementById(`q-card-${qId}`);
-            const allOptions = card.querySelectorAll('.option-item');
-            
-            // Disable further clicks for this card in practice mode
-            allOptions.forEach(opt => opt.style.pointerEvents = 'none');
-            
-            if (oIdx === q.correct) {
-                element.classList.add('correct');
-            } else {
-                element.classList.add('incorrect');
-                document.getElementById(`opt-${qId}-${q.correct}`).classList.add('correct');
-            }
-        } else if (currentMode === 'exam') {
-            userAnswers[qId] = oIdx;
-            const card = document.getElementById(`q-card-${qId}`);
-            const allOptions = card.querySelectorAll('.option-item');
-            allOptions.forEach(opt => opt.classList.remove('selected'));
-            element.classList.add('selected');
-        }
-    }
-
-    function setMode(mode) {
-        currentMode = mode;
-        document.getElementById('practiceModeBtn').classList.toggle('active', mode === 'practice');
-        document.getElementById('examModeBtn').classList.toggle('active', mode === 'exam');
-        
-        if (mode === 'exam') {
-            document.getElementById('timerCard').style.display = 'block';
-            document.getElementById('submitArea').style.display = 'flex';
-            document.getElementById('resultCard').style.display = 'none';
-            document.getElementById('questionsContainer').style.display = 'block';
-            startExamTimer();
-        } else {
-            clearInterval(examInterval);
-            document.getElementById('timerCard').style.display = 'none';
-            document.getElementById('submitArea').style.display = 'none';
-            document.getElementById('resultCard').style.display = 'none';
-            document.getElementById('questionsContainer').style.display = 'block';
-        }
-        resetQuizState();
-    }
-
-    function startExamTimer() {
-        clearInterval(examInterval);
-        examTimeLeft = 3600;
-        updateTimerDisplay();
-        
-        examInterval = setInterval(() => {
-            examTimeLeft--;
-            updateTimerDisplay();
-            if (examTimeLeft <= 0) {
-                clearInterval(examInterval);
-                submitExam();
-            }
-        }, 1000);
-    }
-
-    function updateTimerDisplay() {
-        const minutes = Math.floor(examTimeLeft / 60);
-        const seconds = examTimeLeft % 60;
-        document.getElementById('timerCard').innerText = `Time Remaining: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-
-    function submitExam() {
-        clearInterval(examInterval);
-        document.getElementById('timerCard').style.display = 'none';
-        document.getElementById('submitArea').style.display = 'none';
-        document.getElementById('questionsContainer').style.display = 'none';
-        
-        let score = 0;
-        questions.forEach(q => {
-            if (userAnswers[q.id] === q.correct) {
-                score++;
-            }
-        });
-        
-        const resultCard = document.getElementById('resultCard');
-        const resultScore = document.getElementById('resultScore');
-        const resultFeedback = document.getElementById('resultFeedback');
-        
-        resultScore.innerText = `${score} / ${questions.length}`;
-        const percentage = (score / questions.length) * 100;
-        
-        if (percentage >= 85) {
-            resultFeedback.innerText = "Excellent performance! You are fully prepared.";
-        } else if (percentage >= 60) {
-            resultFeedback.innerText = "Good job! Review the incorrect answers for better results.";
-        } else {
-            resultFeedback.innerText = "Keep practicing. Consistency is key.";
-        }
-        
-        resultCard.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function resetQuizState() {
-        userAnswers = {};
-        renderQuiz();
-    }
-
-    function resetQuiz() {
-        setMode('practice');
-    }
-
-    // Initialize application on load
-    window.onload = () => {
-        renderQuiz();
-    };
-</script>
-</body>
-</html>,
-    
+            text: "Good communicatio
